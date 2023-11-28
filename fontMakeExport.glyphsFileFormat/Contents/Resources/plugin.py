@@ -20,12 +20,15 @@ import objc, os, tempfile, subprocess
 from GlyphsApp import *
 from GlyphsApp import GSScriptingHandler
 from GlyphsApp.plugins import *
+from Foundation import NSMutableOrderedSet
+from AppKit import NSImageNameFolder
 
 # Preference key names
 ExportOutlineformat = "org_fontMake_exportOutlineformat"
 ExportPath = "org_fontMake_exportPath"
 UseExportPath = "org_fontMake_useExportPath"
 AdditionalOptions = "org_fontMake_additional_options"
+ExportRecentExportPaths = "org_fontMake_recent_exportPaths"
 
 OutlineFormatVariableTTF = 1
 OutlineFormatVariableCFF = 2
@@ -71,6 +74,7 @@ class FontMakeExport(FileFormatPlugin):
 		Glyphs.registerDefault(ExportPath, os.path.expanduser("~/Documents"))
 
 		self.setupCheckboxes()
+		self.setupRecentExportPathsButton()
 
 	# Example function. You may delete it
 	@objc.IBAction
@@ -93,6 +97,31 @@ class FontMakeExport(FileFormatPlugin):
 		self.staticTTFButton.setTag_(OutlineFormatStaticTTF)
 
 	@objc.python_method
+	def setupRecentExportPathsButton(self):
+		menu = self.recentExportPathsButton.menu()
+		while len(menu.itemArray()) > 1:
+			menu.removeItemAtIndex_(1)
+
+		recentExportPaths = Glyphs.defaults[ExportRecentExportPaths]
+		if recentExportPaths and len(recentExportPaths) > 0:
+			folderImage = NSImage.imageNamed_(NSImageNameFolder)
+			folderImage.setSize_(NSMakeSize(16, 16))
+		
+			for recentExportPath in recentExportPaths:
+				item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(recentExportPath.stringByStandardizingPath().stringByAbbreviatingWithTildeInPath(), "setRecentExportPath:", "")
+				item.setRepresentedObject_(recentExportPath)
+				item.setImage_(folderImage)
+				item.setTarget_(self)
+				menu.addItem_(item)
+		
+			item = NSMenuItem.separatorItem()
+			menu.addItem_(item)
+
+			item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Clear Recent", "clearRecent:", "")
+			item.setTarget_(self)
+			menu.addItem_(item)
+
+	@objc.python_method
 	def tempPath(self, familyName):
 		appSupportSubpath = GSGlyphsInfo.applicationSupportPath()
 		tempPath = os.path.join(appSupportSubpath, "Temp", familyName)
@@ -100,9 +129,12 @@ class FontMakeExport(FileFormatPlugin):
 		return tempPath
 
 	@objc.python_method
-	def setUpEnviroment(self):
+	def venvPath(self):
+		return os.path.join(os.path.dirname(os.path.dirname(__file__)), "venv")
 		
-		venvPath = os.path.join(os.path.dirname(os.path.dirname(__file__)), "venv")
+	@objc.python_method
+	def setUpEnviroment(self):
+		venvPath = self.venvPath()
 		venvPythonPath = os.path.join(venvPath, "bin/python3")
 		if os.path.exists(venvPythonPath):
 			return venvPythonPath
@@ -118,6 +150,14 @@ class FontMakeExport(FileFormatPlugin):
 		result = subprocess.run(pipCommand, capture_output=True, text=False)
 		
 		return venvPythonPath
+
+	def setRecentExportPath_(self, sender):
+		exportPath = sender.representedObject()
+		Glyphs.defaults[ExportPath] = exportPath
+
+	def clearRecent_(self, sender):
+		Glyphs.defaults[ExportRecentExportPaths] = None
+		self.setupRecentExportPathsButton()
 
 	@objc.python_method
 	def export(self, font):
@@ -165,6 +205,15 @@ class FontMakeExport(FileFormatPlugin):
 		path = GetFolder()
 		if path is not None:
 			Glyphs.defaults[ExportPath] = path
+			
+			recentExportPaths = Glyphs.defaults[ExportRecentExportPaths]
+			if not recentExportPaths:
+				recentExportPaths = []
+			
+			recentExportPathsSet = NSMutableOrderedSet.alloc().initWithArray_(recentExportPaths)
+			recentExportPathsSet.insertObject_atIndex_(path, 0)
+			Glyphs.defaults[ExportRecentExportPaths] = recentExportPathsSet.array()
+			self.setupRecentExportPathsButton()
 
 	@objc.python_method
 	def __file__(self):
