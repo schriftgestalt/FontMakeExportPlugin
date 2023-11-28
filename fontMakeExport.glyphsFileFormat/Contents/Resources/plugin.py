@@ -22,6 +22,7 @@ from GlyphsApp import GSScriptingHandler
 from GlyphsApp.plugins import *
 from Foundation import NSMutableOrderedSet
 from AppKit import NSImageNameFolder
+import shutil
 
 # Preference key names
 ExportOutlineformat = "org_fontMake_exportOutlineformat"
@@ -121,6 +122,10 @@ class FontMakeExport(FileFormatPlugin):
 			item.setTarget_(self)
 			menu.addItem_(item)
 
+		item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Update fontMake", "updateFontMake:", "")
+		item.setTarget_(self)
+		menu.addItem_(item)
+
 	@objc.python_method
 	def tempPath(self, familyName):
 		appSupportSubpath = GSGlyphsInfo.applicationSupportPath()
@@ -158,6 +163,12 @@ class FontMakeExport(FileFormatPlugin):
 	def clearRecent_(self, sender):
 		Glyphs.defaults[ExportRecentExportPaths] = None
 		self.setupRecentExportPathsButton()
+
+	def updateFontMake_(self, sender):
+		venvPath = self.venvPath()
+		if os.path.exists(venvPath):
+			print("Remove Venv folder:", venvPath) # will be re-downloaded on next export
+			shutil.rmtree(venvPath)
 
 	@objc.python_method
 	def export(self, font):
