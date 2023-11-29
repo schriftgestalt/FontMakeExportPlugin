@@ -1,0 +1,281 @@
+(
+	{
+		identifier = "-h";
+		name = "Help";
+		text = "**Help**
+
+show this help message and exit";
+	},
+	{
+		identifier = "--version";
+		name = "Version";
+		text = "**Version**
+
+show program's version number and exit";
+	},
+	{
+		identifier = "--production-names";
+		name = "Production Names";
+		text = "**Production Names**
+
+Rename glyphs with production names if available otherwise use uni-names.";
+	},
+	{
+		identifier = "--no-production-names";
+		name = "No Production Names";
+		text = "**No Production Names**";
+	},
+	{
+		identifier = "--subset";
+		name = "Subset";
+		text = "**Subset**
+
+Subset font using export flags set by glyphsLib";
+	},
+	{
+		identifier = "--no-subset";
+		name = "No Subset";
+		text = "**No Subset**";
+	},
+	{
+		identifier = "-s, --subroutinize";
+		name = "Subroutinize";
+		text = "**Subroutinize**
+
+Optimize CFF table using compressor (default) [DEPRECATED: use --optimize-cff option instead]";
+	},
+	{
+		identifier = "-S, --no-subroutinize";
+		name = "No Subroutinize";
+		text = "**No Subroutinize**";
+	},
+//Input arguments (flags):
+//  The following arguments are mutually exclusive (pick only one):
+
+//	("-g GLYPHS, --glyphs-path GLYPHS", "Path to .glyphs source file"),
+//	("-u UFO [UFO ...], --ufo-paths UFO [UFO ...]", "One or more paths to UFO files"),
+//	("-m DESIGNSPACE, --mm-designspace DESIGNSPACE", "Path to .designspace file"),
+
+// Input arguments (positonal):
+// Alternatively, guess source format from filename extension
+
+// INPUTS                Either one *.designspace or *.glyphs file, or one or more *.ufo
+
+// Other input arguments:
+	{
+		identifier = "--glyph-data GLYPHDATA";
+		name = "GlyphData";
+		text = "**GlyphData**
+
+Custom GlyphData XML file with glyph info (production name, script, category, subCategory, etc.). Can be used more than once (for Glyphs sources only).";
+	},
+//Output arguments:
+//	("-o FORMAT [FORMAT ...], --output FORMAT [FORMAT ...]", "Output font formats. Choose 1 or more from: ufo, otf, otf-cff2, ttf, ttf-interpolatable, otf-interpolatable, variable, variable-cff2. Default: otf, ttf. (No file paths)."),
+//	("--output-path OUTPUT_PATH", "Output font file path. Only valid when the output is a single file (e.g. input is a single UFO or output is a single variable font)"),
+//	("--output-dir OUTPUT_DIR", "Output folder. By default, output folders are created in the current working directory, grouping output fonts by format."),
+//	("-i [INSTANCE_NAME], --interpolate [INSTANCE_NAME]", "Interpolate masters and generate all the instances defined. To only interpolate a specific instance (or instances) that match a given \"name\" attribute, you can pass as argument the full instance name or a regular expression. E.g.: -i \"Noto Sans Bold\"; or -i \".* UI Condensed\". (for Glyphs or DesignSpace sources only)."),
+//	("--variable-fonts [VARIABLE_FONT_FILENAME]", "Filter the list of variable fonts produced from the input Designspace file. By default all listed variable fonts are generated. To generate a specific variable font (or variable fonts) that match a given \"filename\" attribute, you can pass as argument the full filename or a regular expression. E.g.: --variable-fonts \"MyFontVF_WeightOnly.ttf\"; or --variable-fonts \"MyFontVFItalic_.*.ttf\"."),
+//	("-M, --masters-as-instances", "Output masters as instances"),
+	{
+		identifier = "--family-name FAMILY_NAME";
+		name = "Family Name";
+		text = "**Family Name**
+
+Family name to use for masters, and to filter output instances";
+	},
+	{
+		identifier = "--round-instances";
+		name = "Round Instances";
+		text = "**Round Instances**
+
+Apply integer rounding to all geometry when interpolating";
+	},
+//	("--designspace-path DESIGNSPACE_PATH", "Path to output designspace file (for Glyphs sources only)."),
+//	("--master-dir MASTER_DIR", "Directory where to write master UFO. Default: \"./master_ufo\". If value is \"{tmp}\", a temporary directory is created and removed at the end (for Glyphs sources only)."),
+//	("--instance-dir INSTANCE_DIR", "Directory where to write instance UFOs. Default: \"./instance_ufo\". If value is \"{tmp}\", a temporary directory is created and removed at the end (for Glyphs sources only)."),
+//	("--no-write-skipexportglyphs", "Do not store the glyph export flags in the 'public.skipExportGlyphs' key of designspace/UFO lib, but use the old private glyph lib key 'com.schriftgestaltung.Glyphs.Export' (for Glyphs sources only)."),
+//	("--validate-ufo", "Enable ufoLib validation on reading/writing UFO files. It is disabled by default"),
+	{
+		identifier = "--check-compatibility";
+		name = "Check Compatibility";
+		text = "**Check Compatibility**
+
+Check if the source files are interpolatable. It is disabled by default, but enabled when building variable fonts or what the 'Enforce Compatibility Check' custom parameter is set on a Glyphs file";
+	},
+	{
+		identifier = "--no-check-compatibility";
+		name = "No Check Compatibility";
+		text = "**No Check Compatibility**
+
+Turns off the compatibility checker even when building variable fonts";
+	},
+//	("--expand-features-to-instances", "Resolves all include()s in the master feature file and writes the full feature file to all instance UFOs. Only valid when interpolating. Use if you share feature files of masters in external files, as instances can end up elsewhere."),
+	{
+		identifier = "--fea-include-dir FEA_INCLUDE_DIR";
+		name = "Fea Include Dir";
+		text = "**Fea Include Dir**
+
+Overrides the default directory where to search for included feature files with relative paths. This only works when the input is a Designspace or UFOs, not from Glyphs at the moment.";
+	},
+	{
+		identifier = "--no-generate-GDEF";
+		name = "No Generate GDEF";
+		text = "**No Generate GDEF**
+
+Do not auto-generate a GDEF table, but keep an existing one intact.";
+	},
+//	("--save-ufo-as-zip", "Deprecated. Use --ufo-structure=zip instead."),
+//	("--ufo-structure {package,zip,json}", "Select UFO format structure. Choose between: package, zip, json (default: package). NOTE: json export is unofficial/experimental."),
+//	("--indent-json", "Whether to format the JSON files created with --ufo-structure=json as multiple lines with 2-space indentation. Default: single line, no indent."),
+
+	// Handling of contours:
+	{
+		identifier = "--keep-overlaps";
+		name = "Keep Overlaps";
+		text = "**Keep Overlaps**
+
+Do not remove any overlap.";
+	},
+	{
+		identifier = "--overlaps-backend";
+		name = "Overlaps Backend";
+		text = "**Overlaps Backend**
+
+BACKEND Select library to remove overlaps. Choose between: booleanOperations, pathops (default: booleanOperations)";
+	},
+	{
+		identifier = "--keep-direction";
+		name = "Keep Direction";
+		text = "**Keep Direction**
+
+Do not reverse contour direction when output is ttf or ttf-interpolatable";
+	},
+	{
+		identifier = "--ttf-curves {cu2qu,mixed,keep-quad,keep-cubic}";
+		name = "ttf-curves {cu2qu,mixed,keep-quad,keep-cubic}";
+		text = "**ttf-curves {cu2qu,mixed,keep-quad,keep-cubic}**
+
+Controls conversion of cubic Bézier curves to TrueType quadratic splines. By default ('cu2qu'), all cubics are converted to quadratic (glyf v0). With 'mixed', cubics are converted to quadratic only when more economical. If 'keep-quad' or 'keep-cubic', cu2qu is skipped altogether and curves are compiled unchanged. NOTE: cubics in TTF use glyf v1 which is still draft!";
+	},
+	{
+		identifier = "-e ERROR, --conversion-error ERROR";
+		name = "Conversion Error";
+		text = "**Conversion Error**
+
+Maximum approximation error for cubic to quadratic conversion measured in EM";
+	},
+	{
+		identifier = "-f, --flatten-components";
+		name = "Flatten Components";
+		text = "**Flatten Components**
+
+Flatten nested components to single level.";
+	},
+	{
+		identifier = "-a [AUTOHINT], --autohint [AUTOHINT]";
+		name = "Autohint";
+		text = "**Autohint**
+
+Run ttfautohint. Can provide arguments, quoted. By default, ttfautohint is run if the (.glyphs) source contains a 'TTFAutohint options' instance custom parameter. This option overrides that. See --no-autohint to disable.";
+	},
+	{
+		identifier = "-A, --no-autohint";
+		name = "No Autohint";
+		text = "**No Autohint**
+
+Do not run ttfautohint, even if source contains a 'TTFAutohint options' custom parameter";
+	},
+	{
+		identifier = "--cff-round-tolerance";
+		name = "cff Round Tolerance";
+		text = "**cff Round Tolerance**
+
+Restrict rounding of point coordinates in CFF table to only those floats whose absolute difference from their integral part is less than or equal to the tolerance. By default, all floats are rounded to integer (tolerance 0.5); 0 disables rounding.";
+	},
+	{
+		identifier = "--optimize-cff OPTIMIZE_CFF";
+		name = "Optimize cff";
+		text = "**Optimize cff**
+
+0 disables all optimizations; 1 specializes the CFF charstring operators; 2 (default) also enables subroutinization";
+	},
+	{
+		identifier = "--subroutinizer {compreffor,cffsubr}";
+		name = "Subroutinizer";
+		text = "**Subroutinizer**
+
+name of the library to use for compressing CFF charstrings. Choose between: compreffor, cffsubr. By default compreffor is used for CFF 1, and cffsubr for CFF2. NOTE: compreffor doesn't support CFF2.";
+	},
+	{
+		identifier = "--no-optimize-gvar";
+		name = "No Optimize gvar";
+		text = "**No Optimize gvar**
+
+Do not perform IUP optimization on variable font's 'gvar' table. (only works with 'variable' TrueType-flavored output)";
+	},
+	{
+		identifier = "--filter CLASS";
+		name = "Filter";
+		text = "**Filter**
+
+string specifying a filter class to load, either built-in or from an external module, optionally initialized with the given keyword arguments. The class and module names are separated by '::'. The option can be repeated multiple times for each filter class. The option overrides the filters specified in the UFO lib. You can use an ellipsis --filter='...' to keep the latter and insert additional --filter(s), either before or after it.";
+	},
+	{
+		identifier = "--no-auto-use-my-metrics";
+		name = "No Auto use my Metrics";
+		text = "**No Auto use my Metrics**
+
+Don't automatically set USE_MY_METRICS glyf component flags (0x0200).";
+	},
+	{
+		identifier = "--drop-implied-oncurves";
+		name = "Drop Implied Oncurves";
+		text = "**Drop Implied Oncurves**
+
+drop on-curve points that can be implied when exactly in the middle of two off-curve points (TrueType only; default: False).";
+	},
+//Handling of OpenType Layout:
+	{
+		identifier = "--interpolate-binary-layout [MASTER_DIR]";
+		name = "Interpolate Binary Layout";
+		text = "**Interpolate Binary Layout**
+
+Interpolate layout tables from compiled master binaries. Requires Glyphs or DesignSpace source.";
+	},
+	{
+		identifier = "--feature-writer CLASS";
+		name = "Feature Writer";
+		text = "**Feature Writer**
+
+string specifying a feature writer class to load, either built-in or from an external module, optionally initialized with the given keyword arguments. The class and module names are separated by '::'. The option can be repeated multiple times for each writer class. A special value of 'None' will disable all automatic feature generation. The option overrides both the default ufo2ft writers and those specified in the UFO lib. You can use ellipsis --feature-writer='...' to keep the latter and insert additional --feature-writer(s) either before or after those.";
+	},
+	{
+		identifier = "--debug-feature-file FILE";
+		name = "Debug Feature File";
+		text = "**Debug Feature File**
+
+Path were to dump OpenType features text to debug auto-generated features (kern, mark, mkmk, etc.).";
+	},
+	{
+		identifier = "--mti-source MTI_SOURCE";
+		name = "Mti Source";
+		text = "**Mti Source**
+
+mtiLib feature definition .plist file path (use instead of FEA)";
+	},
+// Logging arguments:
+	{
+		identifier = "--timing";
+		name = "Timing";
+		text = "**Timing**
+
+Print the elapsed time for each steps";
+	},
+	{
+		identifier = "--verbose LEVEL";
+		name = "Verbose";
+		text = "**Verbose**
+
+Configure the logger verbosity level. Choose between: DEBUG, INFO, WARNING, ERROR, CRITICAL. Default: INFO";
+	},
+)

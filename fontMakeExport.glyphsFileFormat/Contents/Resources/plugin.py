@@ -20,16 +20,16 @@ import objc, os, tempfile, subprocess
 from GlyphsApp import *
 from GlyphsApp import GSScriptingHandler
 from GlyphsApp.plugins import *
-from Foundation import NSMutableOrderedSet
-from AppKit import NSImageNameFolder
+from Foundation import NSMutableOrderedSet, NSClassFromString, NSZeroRect, NSMaxXEdge, NSArray, NSLog, NSAttributedString
+from AppKit import NSImageNameFolder, NSPopover, NSPopoverBehaviorTransient
 import shutil
 
 # Preference key names
-ExportOutlineformat = "org_fontMake_exportOutlineformat"
-ExportPath = "org_fontMake_exportPath"
-UseExportPath = "org_fontMake_useExportPath"
-AdditionalOptions = "org_fontMake_additional_options"
-ExportRecentExportPaths = "org_fontMake_recent_exportPaths"
+ExportOutlineformatKey = "org_fontMake_exportOutlineformat"
+ExportPathKey = "org_fontMake_exportPath"
+UseExportPathKey = "org_fontMake_useExportPath"
+AdditionalOptionsKey = "org_fontMake_additional_options"
+ExportRecentExportPathsKey = "org_fontMake_recent_exportPaths"
 
 OutlineFormatVariableTTF = 1
 OutlineFormatVariableCFF = 2
@@ -42,6 +42,23 @@ outlineformatKeys = {
 	OutlineFormatStaticCFF: ("otf", "-i"),
 	OutlineFormatStaticTTF: ("ttf", "-i"),
 }
+
+GSAddParameterViewControllerClass = NSClassFromString("GSAddParameterViewController")
+
+class GSAddOptionViewController(GSAddParameterViewControllerClass):
+	
+	def addParameter_(self, sender):
+		newOptions = []
+		for option in self.customParameterController().selectedObjects():
+			name = option["identifier"]
+			newOptions.append(name)
+		if len(newOptions) == 0:
+			return
+		options = Glyphs.defaults[AdditionalOptionsKey]
+		if options is None:
+			options = ""
+		options += " ".join(newOptions)
+		Glyphs.defaults[AdditionalOptionsKey] = options
 
 class FontMakeExport(FileFormatPlugin):
 	
@@ -57,13 +74,13 @@ class FontMakeExport(FileFormatPlugin):
 	staticTTFButton = objc.IBOutlet()
 	recentExportPathsButton = objc.IBOutlet()
 	additionalOptions = objc.IBOutlet()
-
+	
 	@objc.python_method
 	def settings(self):
 		self.name = Glyphs.localize({'en': u'fontMake'})
 		self.icon = "ExportIconTemplate"
 		self.toolbarPosition = 100
-		
+		self._options = None # lazy load when actually needed.
 		# Load .nib dialog (with .extension)
 		self.loadNib('IBdialog', __file__)
 
@@ -71,8 +88,8 @@ class FontMakeExport(FileFormatPlugin):
 	def start(self):
 
 		# Init user preferences if not existent and set default value
-		Glyphs.registerDefault(ExportOutlineformat, OutlineFormatVariableTTF)
-		Glyphs.registerDefault(ExportPath, os.path.expanduser("~/Documents"))
+		Glyphs.registerDefault(ExportOutlineformatKey, OutlineFormatVariableTTF)
+		Glyphs.registerDefault(ExportPathKey, os.path.expanduser("~/Documents"))
 
 		self.setupCheckboxes()
 		self.setupRecentExportPathsButton()
@@ -82,11 +99,11 @@ class FontMakeExport(FileFormatPlugin):
 	def setFileType_(self, sender):
 
 		outlineFormat = sender.tag()
-		Glyphs.intDefaults[ExportOutlineformat] = outlineFormat
+		Glyphs.intDefaults[ExportOutlineformatKey] = outlineFormat
 		self.setupCheckboxes()
 
 	def setupCheckboxes(self):
-		outlineformat = Glyphs.intDefaults[ExportOutlineformat]
+		outlineformat = Glyphs.intDefaults[ExportOutlineformatKey]
 
 		self.variableTTFButton.setState_(outlineformat == OutlineFormatVariableTTF)
 		self.variableTTFButton.setTag_(OutlineFormatVariableTTF)
@@ -103,7 +120,7 @@ class FontMakeExport(FileFormatPlugin):
 		while len(menu.itemArray()) > 1:
 			menu.removeItemAtIndex_(1)
 
-		recentExportPaths = Glyphs.defaults[ExportRecentExportPaths]
+		recentExportPaths = Glyphs.defaults[ExportRecentExportPathsKey]
 		if recentExportPaths and len(recentExportPaths) > 0:
 			folderImage = NSImage.imageNamed_(NSImageNameFolder)
 			folderImage.setSize_(NSMakeSize(16, 16))
@@ -146,23 +163,40 @@ class FontMakeExport(FileFormatPlugin):
 
 		scriptingHandler = GSScriptingHandler.sharedHandler()
 		glyphsPythonPath = os.path.join(scriptingHandler.currentPythonPath(), "bin/python3")
+		print("__glyphsPythonPath", glyphsPythonPath)
 		
 		venvCommand = [glyphsPythonPath, "-m", "venv", venvPath]
 		result = subprocess.run(venvCommand, capture_output=True, text=False)
+		print("__result venv", result.returncode, result)
 		
 		venvPipPath = os.path.join(venvPath, "bin/pip3")
 		pipCommand = [venvPipPath, "install", "fontmake[all]"]
 		result = subprocess.run(pipCommand, capture_output=True, text=False)
+		print("__result pip", result.returncode, result)
 		
 		return venvPythonPath
 
 	def setRecentExportPath_(self, sender):
 		exportPath = sender.representedObject()
-		Glyphs.defaults[ExportPath] = exportPath
+		Glyphs.defaults[ExportPathKey] = exportPath
 
 	def clearRecent_(self, sender):
-		Glyphs.defaults[ExportRecentExportPaths] = None
+		Glyphs.defaults[ExportRecentExportPathsKey] = None
 		self.setupRecentExportPathsButton()
+	
+	def options(self):
+		if self._options is None:
+			NSLog("__path %@", os.path.join(os.path.dirname(__file__), "options.plist"))
+			options = NSArray.arrayWithContentsOfFile_(os.path.join(os.path.dirname(__file__), "options.plist"))
+			NSLog("__options %d", len(options))
+			
+			for option in options:
+				text = option.get("text", None)
+				if text:
+					text = NSAttributedString.attributedStringFromMarkdownString_(text)
+					option["text"] = text
+			self._options = options
+		return self._options
 
 	def updateFontMake_(self, sender):
 		venvPath = self.venvPath()
@@ -170,10 +204,21 @@ class FontMakeExport(FileFormatPlugin):
 			print("Remove Venv folder:", venvPath) # will be re-downloaded on next export
 			shutil.rmtree(venvPath)
 
+	@objc.IBAction
+	def showAddOptionPopup_(self, sender):
+		contentViewController = GSAddOptionViewController.new()
+		contentViewController.setCustomParameters_(self.options())
+		popover = NSPopover.new()
+		popover.setBehavior_(NSPopoverBehaviorTransient)
+		popover.setContentViewController_(contentViewController)
+		popover.setDelegate_(contentViewController)
+		
+		popover.showRelativeToRect_ofView_preferredEdge_(NSZeroRect, sender, NSMaxXEdge)
+
 	@objc.python_method
 	def export(self, font):
 		venvPythonPath = self.setUpEnviroment()
-		if Glyphs.boolDefaults[UseExportPath]:
+		if Glyphs.boolDefaults[UseExportPathKey]:
 			exportPath = Glyphs.defaults[ExportPath]
 		else:
 			exportPath = GetFolder()
@@ -182,12 +227,14 @@ class FontMakeExport(FileFormatPlugin):
 			return False, "No export path"
 		
 		tempFolder = self.tempPath(font.familyName)
+		print("__tempFolder", tempFolder)
 		tempFile = os.path.join(tempFolder, "font.glyphs")
 		font.save(tempFile, makeCopy=True)
 
-		outlineformat = Glyphs.intDefaults[ExportOutlineformat]
+		outlineformat = Glyphs.intDefaults[ExportOutlineformatKey]
 		outlineformatKey = outlineformatKeys[outlineformat]
-		additionalOptions = Glyphs.defaults[AdditionalOptions]
+		additionalOptions = Glyphs.defaults[AdditionalOptionsKey]
+		print("__additionalOptions", additionalOptions)
 		master_dir = os.path.join(tempFolder, "masters")
 		
 		arguments = [venvPythonPath, "-m", "fontmake", "--output-dir", exportPath, "--master-dir", os.path.join(exportPath, "masters"), "--instance-dir", os.path.join(exportPath, "instances"), "-g", tempFile, "-o", *outlineformatKey]
@@ -196,7 +243,9 @@ class FontMakeExport(FileFormatPlugin):
 			if len(additionalOptions) > 0:
 				arguments.extend(additionalOptions)
 
+		print("__arguments", arguments)
 		result = subprocess.run(arguments, capture_output=True, text=True)
+		print("__result", result.stdout, "\n", result.stderr)
 		stderr = result.stderr
 		
 		if stderr is not None and len(stderr) > 0:
@@ -215,15 +264,16 @@ class FontMakeExport(FileFormatPlugin):
 	def openDoc_(self, sender):
 		path = GetFolder()
 		if path is not None:
+			print("__path", path)
 			Glyphs.defaults[ExportPath] = path
 			
-			recentExportPaths = Glyphs.defaults[ExportRecentExportPaths]
+			recentExportPaths = Glyphs.defaults[ExportRecentExportPathsKey]
 			if not recentExportPaths:
 				recentExportPaths = []
 			
 			recentExportPathsSet = NSMutableOrderedSet.alloc().initWithArray_(recentExportPaths)
 			recentExportPathsSet.insertObject_atIndex_(path, 0)
-			Glyphs.defaults[ExportRecentExportPaths] = recentExportPathsSet.array()
+			Glyphs.defaults[ExportRecentExportPathsKey] = recentExportPathsSet.array()
 			self.setupRecentExportPathsButton()
 
 	@objc.python_method

@@ -153,7 +153,7 @@
                     </connections>
                 </button>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tXf-wR-7pE">
-                    <rect key="frame" x="30" y="89" width="371" height="21"/>
+                    <rect key="frame" x="30" y="89" width="343" height="21"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="cbK-kQ-Jgr">
                         <font key="font" usesAppearanceFont="YES"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -163,11 +163,23 @@
                         <binding destination="32" name="value" keyPath="values.org_fontMake_additional_options" id="zIC-9T-fJf"/>
                     </connections>
                 </textField>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UGk-q4-qXj">
+                    <rect key="frame" x="378" y="87" width="26" height="26"/>
+                    <buttonCell key="cell" type="round" bezelStyle="circular" image="NSAddTemplate" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="A0X-HD-eEJ">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="showAddOptionPopup:" target="-2" id="3ED-la-PWa"/>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
                 <constraint firstItem="kBW-DZ-mcW" firstAttribute="top" secondItem="BCy-VU-bPj" secondAttribute="bottom" constant="15" id="1qQ-b1-ImD"/>
                 <constraint firstItem="Rlh-zW-7E1" firstAttribute="leading" secondItem="zqP-vd-wQs" secondAttribute="trailing" constant="8" symbolic="YES" id="2ua-f2-DMf"/>
                 <constraint firstItem="zqP-vd-wQs" firstAttribute="centerY" secondItem="Ov6-1X-2md" secondAttribute="centerY" id="5pE-L4-ReI"/>
+                <constraint firstItem="UGk-q4-qXj" firstAttribute="trailing" secondItem="MwK-lw-45g" secondAttribute="trailing" id="7CN-Id-8RP"/>
+                <constraint firstItem="UGk-q4-qXj" firstAttribute="leading" secondItem="tXf-wR-7pE" secondAttribute="trailing" constant="8" symbolic="YES" id="8me-KK-2fh"/>
                 <constraint firstItem="Ov6-1X-2md" firstAttribute="top" secondItem="kBW-DZ-mcW" secondAttribute="bottom" constant="15" id="8tm-cN-3j2"/>
                 <constraint firstItem="kBW-DZ-mcW" firstAttribute="leading" secondItem="KgY-IO-oG7" secondAttribute="leading" id="AFJ-bJ-ExG"/>
                 <constraint firstItem="BCy-VU-bPj" firstAttribute="leading" secondItem="KgY-IO-oG7" secondAttribute="leading" id="CX3-T0-IJw"/>
@@ -201,11 +213,11 @@
                 <constraint firstItem="BCy-VU-bPj" firstAttribute="leading" secondItem="MwK-lw-45g" secondAttribute="leading" id="tnS-V6-WAJ"/>
                 <constraint firstItem="xtM-mb-S43" firstAttribute="top" secondItem="vty-C1-avL" secondAttribute="bottom" constant="8" symbolic="YES" id="u3T-C1-rzW"/>
                 <constraint firstItem="xtM-mb-S43" firstAttribute="trailing" secondItem="KgY-IO-oG7" secondAttribute="trailing" id="uLL-Aq-mbN"/>
+                <constraint firstItem="UGk-q4-qXj" firstAttribute="centerY" secondItem="tXf-wR-7pE" secondAttribute="centerY" id="vsj-8H-ET9"/>
                 <constraint firstItem="vty-C1-avL" firstAttribute="trailing" secondItem="thE-oi-hdA" secondAttribute="trailing" id="wnc-gp-SMW"/>
                 <constraint firstAttribute="trailing" secondItem="xtM-mb-S43" secondAttribute="trailing" constant="30" id="x2X-Zc-8sJ"/>
                 <constraint firstItem="tXf-wR-7pE" firstAttribute="leading" secondItem="MwK-lw-45g" secondAttribute="leading" id="yM1-1F-0UV"/>
                 <constraint firstItem="Ov6-1X-2md" firstAttribute="leading" secondItem="KgY-IO-oG7" secondAttribute="leading" id="z8a-MI-AEy"/>
-                <constraint firstItem="tXf-wR-7pE" firstAttribute="trailing" secondItem="MwK-lw-45g" secondAttribute="trailing" id="zcW-Vf-3Yh"/>
                 <constraint firstItem="MwK-lw-45g" firstAttribute="leading" secondItem="0uz-PR-nvh" secondAttribute="leading" constant="30" id="zwE-DY-htP"/>
             </constraints>
             <point key="canvasLocation" x="444" y="546"/>
@@ -213,5 +225,6 @@
     </objects>
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>
+        <image name="NSAddTemplate" width="14" height="13"/>
     </resources>
 </document>
