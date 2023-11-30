@@ -22,7 +22,10 @@ from GlyphsApp import GSScriptingHandler
 from GlyphsApp.plugins import *
 from Foundation import NSMutableOrderedSet, NSClassFromString, NSZeroRect, NSMaxXEdge, NSArray, NSLog, NSAttributedString
 from AppKit import NSImageNameFolder, NSPopover, NSPopoverBehaviorTransient
+from io import StringIO
+import shlex
 import shutil
+import sys
 
 # Preference key names
 ExportOutlineformatKey = "org_fontMake_exportOutlineformat"
@@ -44,6 +47,44 @@ outlineformatKeys = {
 }
 
 GSAddParameterViewControllerClass = NSClassFromString("GSAddParameterViewController")
+
+
+def run_subprocess_in_macro_window(command, check=False, show_window=True, capture_output=False):
+	"""Wrapper for subprocess.run that writes in real time to Macro output window"""
+
+	if show_window:
+		Glyphs.showMacroWindow()
+
+	# echo command
+	print(f"$ {' '.join(shlex.quote(str(arg)) for arg in command)}")
+
+	# Start the subprocess asynchronously and redirect output to a pipe
+	process = subprocess.Popen(
+		command,
+		stdout=subprocess.PIPE,
+		stderr=subprocess.STDOUT,  # Redirect stderr to stdout
+		text=True,
+		bufsize=1,  # Line-buffered
+	)
+
+	# Read the output line by line and write to Glyphs.app's Macro output window
+	output = StringIO() if capture_output else None
+	while process.poll() is None:
+		for line in process.stdout:
+			sys.stdout.write(line)
+			if output is not None:
+				output.write(line)
+
+	returncode = process.wait()
+
+	if check and returncode != 0:
+		# Raise an exception if the process returned an error code
+		raise subprocess.CalledProcessError(returncode, process.args, process.stdout, process.stderr)
+
+	if capture_output:
+		return subprocess.CompletedProcess(process.args, returncode, output.getvalue(), "")
+
+	return subprocess.CompletedProcess(process.args, returncode, None, None)
 
 
 class GSAddOptionViewController(GSAddParameterViewControllerClass):
@@ -168,11 +209,11 @@ class FontMakeExport(FileFormatPlugin):
 		glyphsPythonPath = os.path.join(scriptingHandler.currentPythonPath(), "bin/python3")
 
 		venvCommand = [glyphsPythonPath, "-m", "venv", venvPath]
-		result = subprocess.run(venvCommand, capture_output=True, text=False)
+		run_subprocess_in_macro_window(venvCommand, check=True)
 
 		venvPipPath = os.path.join(venvPath, "bin/pip3")
 		pipCommand = [venvPipPath, "install", "fontmake[all]"]
-		result = subprocess.run(pipCommand, capture_output=True, text=False)
+		run_subprocess_in_macro_window(pipCommand, check=True)
 
 		return venvPythonPath
 
@@ -243,23 +284,19 @@ class FontMakeExport(FileFormatPlugin):
 			*outlineformatKey,
 		]
 		if additionalOptions:
-			additionalOptions = additionalOptions.split(" ")
+			additionalOptions = shlex.split(additionalOptions)
 			if len(additionalOptions) > 0:
 				arguments.extend(additionalOptions)
 
-		result = subprocess.run(arguments, capture_output=True, text=True)
-		print("Export Result:", result.stdout, "\n", result.stderr)
-		stderr = result.stderr
+		result = run_subprocess_in_macro_window(arguments, capture_output=True)
 
-		if stderr is not None and len(stderr) > 0:
-			lines = stderr.split("\n")
+		if result.returncode != 0:
 			errorLines = []
-			for line in lines:
+			for line in result.stdout.splitlines():
 				if line.startswith("ERROR:") or "fontmake: Error:" in line:
 					errorLines.append(line)
-			if len(errorLines) > 0:
-				stderr = "\n".join(errorLines)
-				return False, stderr
+			errorMsg = "\n".join(errorLines) or "An error occurred. Check Macro Window for details."
+			return False, errorMsg
 
 		return True, "OK"
 
