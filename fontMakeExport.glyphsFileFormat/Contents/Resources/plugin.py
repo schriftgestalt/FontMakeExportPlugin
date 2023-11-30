@@ -219,7 +219,7 @@ class FontMakeExport(FileFormatPlugin):
 	def export(self, font):
 		venvPythonPath = self.setUpEnviroment()
 		if Glyphs.boolDefaults[UseExportPathKey]:
-			exportPath = Glyphs.defaults[ExportPath]
+			exportPath = Glyphs.defaults[ExportPathKey]
 		else:
 			exportPath = GetFolder()
 
@@ -265,7 +265,7 @@ class FontMakeExport(FileFormatPlugin):
 		path = GetFolder()
 		if path is not None:
 			print("__path", path)
-			Glyphs.defaults[ExportPath] = path
+			Glyphs.defaults[ExportPathKey] = path
 			
 			recentExportPaths = Glyphs.defaults[ExportRecentExportPathsKey]
 			if not recentExportPaths:
