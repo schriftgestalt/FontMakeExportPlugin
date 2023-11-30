@@ -152,8 +152,8 @@ Do not reverse contour direction when output is ttf or ttf-interpolatable";
 	},
 	{
 		identifier = "--ttf-curves {cu2qu,mixed,keep-quad,keep-cubic}";
-		name = "ttf-curves {cu2qu,mixed,keep-quad,keep-cubic}";
-		text = "**ttf-curves {cu2qu,mixed,keep-quad,keep-cubic}**
+		name = "ttf Curves Conversion";
+		text = "**ttf Curves Conversion**
 
 Controls conversion of cubic Bézier curves to TrueType quadratic splines. By default ('cu2qu'), all cubics are converted to quadratic (glyf v0). With 'mixed', cubics are converted to quadratic only when more economical. If 'keep-quad' or 'keep-cubic', cu2qu is skipped altogether and curves are compiled unchanged. NOTE: cubics in TTF use glyf v1 which is still draft!";
 	},
