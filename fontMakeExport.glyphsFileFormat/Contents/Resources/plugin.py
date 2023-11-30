@@ -284,7 +284,7 @@ class FontMakeExport(FileFormatPlugin):
 			*outlineformatKey,
 		]
 		if additionalOptions:
-			additionalOptions = additionalOptions.split(" ")
+			additionalOptions = shlex.split(additionalOptions)
 			if len(additionalOptions) > 0:
 				arguments.extend(additionalOptions)
 
