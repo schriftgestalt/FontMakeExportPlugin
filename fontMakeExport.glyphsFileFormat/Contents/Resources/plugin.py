@@ -37,8 +37,8 @@ OutlineFormatStaticCFF = 3
 OutlineFormatStaticTTF = 4
 
 outlineformatKeys = {
-	OutlineFormatVariableTTF: ("variable"),
-	OutlineFormatVariableCFF: ("variable-cff2"),
+	OutlineFormatVariableTTF: ("variable", ),
+	OutlineFormatVariableCFF: ("variable-cff2", ),
 	OutlineFormatStaticCFF: ("otf", "-i"),
 	OutlineFormatStaticTTF: ("ttf", "-i"),
 }
