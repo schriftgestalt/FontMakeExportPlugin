@@ -230,12 +230,17 @@ class FontMakeExport(FileFormatPlugin):
 		outlineformat = Glyphs.intDefaults[ExportOutlineformatKey]
 		outlineformatKey = outlineformatKeys[outlineformat]
 		additionalOptions = Glyphs.defaults[AdditionalOptionsKey]
-		master_dir = os.path.join(tempFolder, "masters")
 
 		arguments = [
-			venvPythonPath, "-m", "fontmake", "--output-dir", exportPath, "--master-dir",
-			os.path.join(exportPath, "masters"), "--instance-dir",
-			os.path.join(exportPath, "instances"), "-g", tempFile, "-o", *outlineformatKey
+			venvPythonPath,
+			"-m",
+			"fontmake",
+			"--output-dir",
+			exportPath,
+			"-g",
+			tempFile,
+			"-o",
+			*outlineformatKey,
 		]
 		if additionalOptions:
 			additionalOptions = additionalOptions.split(" ")
