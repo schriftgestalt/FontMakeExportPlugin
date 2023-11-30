@@ -63,7 +63,7 @@ Optimize CFF table using compressor (default) [DEPRECATED: use --optimize-cff op
 
 // Other input arguments:
 	{
-		identifier = "--glyph-data GLYPHDATA";
+		identifier = "--glyph-data [GLYPHDATA]";
 		name = "GlyphData";
 		text = "**GlyphData**
 
@@ -77,7 +77,7 @@ Custom GlyphData XML file with glyph info (production name, script, category, su
 //	("--variable-fonts [VARIABLE_FONT_FILENAME]", "Filter the list of variable fonts produced from the input Designspace file. By default all listed variable fonts are generated. To generate a specific variable font (or variable fonts) that match a given \"filename\" attribute, you can pass as argument the full filename or a regular expression. E.g.: --variable-fonts \"MyFontVF_WeightOnly.ttf\"; or --variable-fonts \"MyFontVFItalic_.*.ttf\"."),
 //	("-M, --masters-as-instances", "Output masters as instances"),
 	{
-		identifier = "--family-name FAMILY_NAME";
+		identifier = "--family-name [FAMILY_NAME]";
 		name = "Family Name";
 		text = "**Family Name**
 
@@ -111,7 +111,7 @@ Turns off the compatibility checker even when building variable fonts";
 	},
 //	("--expand-features-to-instances", "Resolves all include()s in the master feature file and writes the full feature file to all instance UFOs. Only valid when interpolating. Use if you share feature files of masters in external files, as instances can end up elsewhere."),
 	{
-		identifier = "--fea-include-dir FEA_INCLUDE_DIR";
+		identifier = "--fea-include-dir [FEA_INCLUDE_DIR]";
 		name = "Fea Include Dir";
 		text = "**Fea Include Dir**
 
@@ -158,7 +158,7 @@ Do not reverse contour direction when output is ttf or ttf-interpolatable";
 Controls conversion of cubic Bézier curves to TrueType quadratic splines. By default ('cu2qu'), all cubics are converted to quadratic (glyf v0). With 'mixed', cubics are converted to quadratic only when more economical. If 'keep-quad' or 'keep-cubic', cu2qu is skipped altogether and curves are compiled unchanged. NOTE: cubics in TTF use glyf v1 which is still draft!";
 	},
 	{
-		identifier = "--conversion-error ERROR";
+		identifier = "--conversion-error [ERROR]";
 		name = "Conversion Error";
 		text = "**Conversion Error**
 
@@ -186,21 +186,21 @@ Run ttfautohint. Can provide arguments, quoted. By default, ttfautohint is run i
 Do not run ttfautohint, even if source contains a 'TTFAutohint options' custom parameter";
 	},
 	{
-		identifier = "--cff-round-tolerance";
+		identifier = "--cff-round-tolerance [TOLERANCE]";
 		name = "cff Round Tolerance";
 		text = "**cff Round Tolerance**
 
 Restrict rounding of point coordinates in CFF table to only those floats whose absolute difference from their integral part is less than or equal to the tolerance. By default, all floats are rounded to integer (tolerance 0.5); 0 disables rounding.";
 	},
 	{
-		identifier = "--optimize-cff OPTIMIZE_CFF";
+		identifier = "--optimize-cff [OPTIMIZE_CFF]";
 		name = "Optimize cff";
 		text = "**Optimize cff**
 
 0 disables all optimizations; 1 specializes the CFF charstring operators; 2 (default) also enables subroutinization";
 	},
 	{
-		identifier = "--subroutinizer {compreffor,cffsubr}";
+		identifier = "--subroutinizer {compreffor|cffsubr}";
 		name = "Subroutinizer";
 		text = "**Subroutinizer**
 
@@ -214,7 +214,7 @@ name of the library to use for compressing CFF charstrings. Choose between: comp
 Do not perform IUP optimization on variable font's 'gvar' table. (only works with 'variable' TrueType-flavored output)";
 	},
 	{
-		identifier = "--filter CLASS";
+		identifier = "--filter [CLASS]";
 		name = "Filter";
 		text = "**Filter**
 
@@ -243,21 +243,21 @@ drop on-curve points that can be implied when exactly in the middle of two off-c
 Interpolate layout tables from compiled master binaries. Requires Glyphs or DesignSpace source.";
 	},
 	{
-		identifier = "--feature-writer CLASS";
+		identifier = "--feature-writer [CLASS]";
 		name = "Feature Writer";
 		text = "**Feature Writer**
 
 string specifying a feature writer class to load, either built-in or from an external module, optionally initialized with the given keyword arguments. The class and module names are separated by '::'. The option can be repeated multiple times for each writer class. A special value of 'None' will disable all automatic feature generation. The option overrides both the default ufo2ft writers and those specified in the UFO lib. You can use ellipsis --feature-writer='...' to keep the latter and insert additional --feature-writer(s) either before or after those.";
 	},
 	{
-		identifier = "--debug-feature-file FILE";
+		identifier = "--debug-feature-file [FILE]";
 		name = "Debug Feature File";
 		text = "**Debug Feature File**
 
 Path were to dump OpenType features text to debug auto-generated features (kern, mark, mkmk, etc.).";
 	},
 	{
-		identifier = "--mti-source MTI_SOURCE";
+		identifier = "--mti-source [MTI_SOURCE]";
 		name = "Mti Source";
 		text = "**Mti Source**
 
@@ -272,7 +272,7 @@ mtiLib feature definition .plist file path (use instead of FEA)";
 Print the elapsed time for each steps";
 	},
 	{
-		identifier = "--verbose LEVEL";
+		identifier = "--verbose [LEVEL]";
 		name = "Verbose";
 		text = "**Verbose**
 
