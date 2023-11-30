@@ -8,4 +8,4 @@ It will install its own environment and downloads the latest version of required
 
 The "Command line options" accept whatever fontMake accepts. 
 
-There is a "Update FontMake" option: the gear button in the bottom right. 
+There is an "Update FontMake" option: the gear button in the bottom right. 
