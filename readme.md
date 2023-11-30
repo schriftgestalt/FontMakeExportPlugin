@@ -1,6 +1,6 @@
 ### FontMake export plugin
 
-A export plugin for Glyphs that uses fontMake and glyphsLib to export fonts. When installed, it shows up in the regular Export dialog (Cmd+E).
+An export plugin for Glyphs that uses fontMake and glyphsLib to export fonts. When installed, it shows up in the regular Export dialog (Cmd+E).
 
 It will install its own environment and downloads the latest version of required libraries. These are stored inside the plugin and thus are removed when the plugin is deleted. 
 
