@@ -38,14 +38,14 @@ Subset font using export flags set by glyphsLib";
 		text = "**No Subset**";
 	},
 	{
-		identifier = "-s, --subroutinize";
+		identifier = "--subroutinize";
 		name = "Subroutinize";
 		text = "**Subroutinize**
 
 Optimize CFF table using compressor (default) [DEPRECATED: use --optimize-cff option instead]";
 	},
 	{
-		identifier = "-S, --no-subroutinize";
+		identifier = "--no-subroutinize";
 		name = "No Subroutinize";
 		text = "**No Subroutinize**";
 	},
@@ -158,28 +158,28 @@ Do not reverse contour direction when output is ttf or ttf-interpolatable";
 Controls conversion of cubic Bézier curves to TrueType quadratic splines. By default ('cu2qu'), all cubics are converted to quadratic (glyf v0). With 'mixed', cubics are converted to quadratic only when more economical. If 'keep-quad' or 'keep-cubic', cu2qu is skipped altogether and curves are compiled unchanged. NOTE: cubics in TTF use glyf v1 which is still draft!";
 	},
 	{
-		identifier = "-e ERROR, --conversion-error ERROR";
+		identifier = "--conversion-error ERROR";
 		name = "Conversion Error";
 		text = "**Conversion Error**
 
 Maximum approximation error for cubic to quadratic conversion measured in EM";
 	},
 	{
-		identifier = "-f, --flatten-components";
+		identifier = "--flatten-components";
 		name = "Flatten Components";
 		text = "**Flatten Components**
 
 Flatten nested components to single level.";
 	},
 	{
-		identifier = "-a [AUTOHINT], --autohint [AUTOHINT]";
+		identifier = "--autohint [AUTOHINT]";
 		name = "Autohint";
 		text = "**Autohint**
 
 Run ttfautohint. Can provide arguments, quoted. By default, ttfautohint is run if the (.glyphs) source contains a 'TTFAutohint options' instance custom parameter. This option overrides that. See --no-autohint to disable.";
 	},
 	{
-		identifier = "-A, --no-autohint";
+		identifier = "--no-autohint";
 		name = "No Autohint";
 		text = "**No Autohint**
 
