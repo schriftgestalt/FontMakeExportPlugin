@@ -37,8 +37,8 @@ OutlineFormatStaticCFF = 3
 OutlineFormatStaticTTF = 4
 
 outlineformatKeys = {
-	OutlineFormatVariableTTF: ("variable"),
-	OutlineFormatVariableCFF: ("variable-cff2"),
+	OutlineFormatVariableTTF: ("variable", ),
+	OutlineFormatVariableCFF: ("variable-cff2", ),
 	OutlineFormatStaticCFF: ("otf", "-i"),
 	OutlineFormatStaticTTF: ("ttf", "-i"),
 }
@@ -230,12 +230,17 @@ class FontMakeExport(FileFormatPlugin):
 		outlineformat = Glyphs.intDefaults[ExportOutlineformatKey]
 		outlineformatKey = outlineformatKeys[outlineformat]
 		additionalOptions = Glyphs.defaults[AdditionalOptionsKey]
-		master_dir = os.path.join(tempFolder, "masters")
 
 		arguments = [
-			venvPythonPath, "-m", "fontmake", "--output-dir", exportPath, "--master-dir",
-			os.path.join(exportPath, "masters"), "--instance-dir",
-			os.path.join(exportPath, "instances"), "-g", tempFile, "-o", *outlineformatKey
+			venvPythonPath,
+			"-m",
+			"fontmake",
+			"--output-dir",
+			exportPath,
+			"-g",
+			tempFile,
+			"-o",
+			*outlineformatKey,
 		]
 		if additionalOptions:
 			additionalOptions = additionalOptions.split(" ")
