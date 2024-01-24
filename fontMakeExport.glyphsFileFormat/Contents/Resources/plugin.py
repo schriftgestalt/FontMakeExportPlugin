@@ -63,6 +63,7 @@ def run_subprocess_in_macro_window(command, check=False, show_window=True, captu
 		command,
 		stdout=subprocess.PIPE,
 		stderr=subprocess.STDOUT,  # Redirect stderr to stdout
+		encoding="utf-8",
 		text=True,
 		bufsize=1,  # Line-buffered
 	)
