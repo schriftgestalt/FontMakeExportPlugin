@@ -13,7 +13,6 @@
                 <outlet property="staticTTFButton" destination="vty-C1-avL" id="GZv-iw-mKn"/>
                 <outlet property="variableCFFButton" destination="axp-as-pKL" id="AjF-7R-u52"/>
                 <outlet property="variableTTFButton" destination="EFJ-ta-bGg" id="w1K-qd-xcm"/>
-                <outlet property="view" destination="0uz-PR-nvh" id="7In-QF-9hO"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
