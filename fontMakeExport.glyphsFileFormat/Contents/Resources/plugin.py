@@ -146,6 +146,7 @@ class FontMakeExport(FileFormatPlugin):
 		Glyphs.intDefaults[ExportOutlineformatKey] = outlineFormat
 		self.setupCheckboxes()
 
+	@objc.python_method
 	def setupCheckboxes(self):
 		outlineformat = Glyphs.intDefaults[ExportOutlineformatKey]
 
