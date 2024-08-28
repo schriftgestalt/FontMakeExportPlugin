@@ -256,7 +256,44 @@ class FontMakeExport(FileFormatPlugin):
 		popover.showRelativeToRect_ofView_preferredEdge_(NSZeroRect, sender, NSMaxXEdge)
 
 	@objc.python_method
+	def bake_everything(self, layer):
+		shapes = layer.shapes[::1]
+		output_layer = GSLayer()
+		pen = output_layer.getPen()
+		layer.bezierPath.segments.self.drawInPen_(pen)
+		shapes_length = len(shapes)
+		for l in range(shapes_length):
+			del layer.shapes[shapes_length - 1 - l]
+		layer.shapes = output_layer.shapes 
+
+	@objc.python_method
+	def decompose_reversed_components(self, layer):
+		for component in layer.components:
+			is_reversed = component.attributes.get("reversePaths", False)
+			if is_reversed:
+				component.decompose()
+	
+	@objc.python_method
+	def decompose_corners(self, layer):
+		layer.decomposeCorners()
+
+	@objc.python_method
+	def decompose_outlines(self, layer):
+		shapes = layer.shapes
+		shapes_length = len(shapes)
+		for s in range(shapes_length):
+			shape = shapes[shapes_length - s - 1]
+			if isinstance(shape, GSPath):
+				attributes = shape.attributes
+				if "strokeWidth" in attributes or "strokeHeight" in attributes:
+					expanded_stroke = shape.expandedStroke()
+					del shapes[shapes_length - s - 1]
+					for new_path in expanded_stroke:
+						layer.shapes.insert(shapes_length - s - 1, new_path)
+
+	@objc.python_method
 	def export(self, font):
+
 		venvPythonPath = self.setUpEnviroment()
 		if Glyphs.boolDefaults[UseExportPathKey]:
 			exportPath = Glyphs.defaults[ExportPathKey]
@@ -265,6 +302,20 @@ class FontMakeExport(FileFormatPlugin):
 
 		if exportPath is None:
 			return False, "No export path"
+		
+		font = font.copy()
+		for glyph in font.glyphs:
+			for layer in filter(lambda x:x.isMasterLayer or x.isSpecialLayer, glyph.layers):
+				has_masks = False
+				for shape in layer.shapes:
+					if "mask" in shape.attributes:
+						has_masks = True
+				if has_masks:
+					self.bake_everything(layer)
+				else:
+					self.decompose_corners(layer)
+					self.decompose_outlines(layer)
+					self.decompose_reversed_components(layer)
 
 		tempFolder = self.tempPath(font.familyName)
 		tempFile = os.path.join(tempFolder, "font.glyphs")
